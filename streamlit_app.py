@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import io
 
 st.set_page_config(page_title="Kalkulator Alpha Cronbach", layout="wide")
 st.title("Kalkulator Alpha Cronbach")
@@ -80,11 +81,19 @@ if uploaded_file is not None:
     })
     @st.cache_data
     def convert_df(df):
-        return df.to_excel(index=False, engine='openpyxl')
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name="Hasil Analisis")
+    processed_data = output.getvalue()
+    return processed_data
 
     excel_data = convert_df(hasil)
     st.download_button(
         label="📥 Download Excel",
+    data=convert_df(hasil),
+    file_name='hasil_analisis.xlsx',
+    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+)
         data=excel_data,
         file_name='hasil_analisis.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
