@@ -10,9 +10,9 @@ st.title("📊 Kalkulator Alpha Cronbach")
 st.write("""
 Selamat datang di Kalkulator Alpha Cronbach.  
 Aplikasi ini membantu Anda menghitung **nilai Cronbach’s Alpha** untuk mengevaluasi reliabilitas kuesioner.  
-📥 *Unggah file Excel (.xlsx) yang berisi data jawaban responden*, dan sistem akan secara otomatis menghitung:  
-- ✅ Rata-rata dimensi (Content & Accuracy)  
-- ✅ Cronbach’s Alpha  
+*Silahkan unggah file Excel (.xlsx) yang berisi data jawaban responden*, dan sistem akan secara otomatis menghitung:  
+- Rata-rata dimensi (Content & Accuracy)  
+- Cronbach’s Alpha  
 """)
 
 # File uploader
