@@ -12,7 +12,7 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
-st.title("📊 Kalkulator Alpha Cronbach")
+st.title("Kalkulator Alpha Cronbach")
 
 # =====================
 # Deskripsi Aplikasi
@@ -20,10 +20,10 @@ st.title("📊 Kalkulator Alpha Cronbach")
 st.write("""
 Selamat datang di **Kalkulator Alpha Cronbach** 🎓  
 Aplikasi ini membantu Anda menghitung **nilai Cronbach’s Alpha** untuk mengevaluasi reliabilitas kuesioner.  
-📥 *Unggah file Excel (.xlsx) berisi data jawaban responden*, dan sistem akan menghitung:
-- ✅ Rata-rata dimensi (Content & Accuracy)
-- ✅ Nilai Cronbach’s Alpha
-- ✅ Menyajikan grafik interaktif dan hasil yang dapat diunduh
+*Silahkan unggah file Excel (.xlsx) berisi data jawaban responden*, dan sistem akan:
+- Menghitung rata-rata dimensi (Content & Accuracy)
+- Menampilkan nilai Cronbach’s Alpha
+- Menyajikan grafik interaktif dan hasil yang dapat diunduh
 """)
 
 # =====================
@@ -36,7 +36,7 @@ if uploaded_file is not None:
     # Baca & Tampilkan Data
     # =====================
     df = pd.read_excel(uploaded_file)
-    st.subheader("📄 Data Jawaban Kuesioner")
+    st.subheader("Data Jawaban Kuesioner")
     st.dataframe(df)
 
     # Hitung rata-rata dimensi
@@ -60,7 +60,7 @@ if uploaded_file is not None:
     # =====================
     # Hasil Analisis
     # =====================
-    st.subheader("📈 Hasil Analisis")
+    st.subheader("Hasil Analisis")
     col1, col2, col3 = st.columns(3)
     col1.metric("Rata-rata Content", content_avg)
     col2.metric("Rata-rata Accuracy", accuracy_avg)
@@ -69,7 +69,7 @@ if uploaded_file is not None:
     # =====================
     # Grafik Bar Chart
     # =====================
-    st.subheader("📊 Grafik Rata-rata Dimensi")
+    st.subheader("Grafik Rata-rata Dimensi")
     bar_chart = go.Figure(data=[
         go.Bar(name='Dimensi', x=['Content', 'Accuracy'], y=[content_avg, accuracy_avg],
                marker_color=['#4CAF50', '#2196F3'])
@@ -80,7 +80,7 @@ if uploaded_file is not None:
     # =====================
     # Gauge Meter Cronbach’s Alpha
     # =====================
-    st.subheader("📟 Visualisasi Cronbach’s Alpha")
+    st.subheader("Visualisasi Cronbach’s Alpha")
     gauge = go.Figure(go.Indicator(
         mode="gauge+number",
         value=alpha,
@@ -104,7 +104,7 @@ if uploaded_file is not None:
     # =====================
     # Tombol Download Hasil
     # =====================
-    st.subheader("💾 Download Hasil Analisis")
+    st.subheader("Download Hasil Analisis")
     hasil = pd.DataFrame({
         'Dimensi': ['Content', 'Accuracy'],
         'Rata-rata': [content_avg, accuracy_avg],
@@ -121,7 +121,7 @@ if uploaded_file is not None:
     excel_data = convert_df_to_excel(hasil)
 
     st.download_button(
-        label="📥 Download Excel",
+        label="Download Excel",
         data=excel_data,
         file_name='hasil_analisis.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
