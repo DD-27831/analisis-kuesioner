@@ -2,9 +2,20 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.set_page_config(page_title="Analisis Kuesioner", layout="wide")
+# Judul & Metadata
+st.set_page_config(page_title="Kalkulator Alpha Cronbach", layout="wide")
 st.title("📊 Kalkulator Alpha Cronbach")
 
+# Deskripsi singkat
+st.write("""
+Selamat datang di Kalkulator Alpha Cronbach.  
+Aplikasi ini membantu Anda menghitung **nilai Cronbach’s Alpha** untuk mengevaluasi reliabilitas kuesioner.  
+📥 *Unggah file Excel (.xlsx) yang berisi data jawaban responden*, dan sistem akan secara otomatis menghitung:  
+- ✅ Rata-rata dimensi (Content & Accuracy)  
+- ✅ Cronbach’s Alpha  
+""")
+
+# File uploader
 uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file)
@@ -24,6 +35,7 @@ if uploaded_file is not None:
     alpha = cronbach_alpha(df[['Q1', 'Q2', 'Q3', 'Q4', 'Q5']])
 
     st.subheader("📈 Hasil Analisis")
-    st.metric("Rata-rata Content", round(df['Content'].mean(), 2))
-    st.metric("Rata-rata Accuracy", round(df['Accuracy'].mean(), 2))
-    st.metric("Cronbach’s Alpha", round(alpha, 3))
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Rata-rata Content", round(df['Content'].mean(), 2))
+    col2.metric("Rata-rata Accuracy", round(df['Accuracy'].mean(), 2))
+    col3.metric("Cronbach’s Alpha", round(alpha, 3))
