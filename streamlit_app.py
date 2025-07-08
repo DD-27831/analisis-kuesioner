@@ -4,7 +4,7 @@ import numpy as np
 
 # Judul & Metadata
 st.set_page_config(page_title="Kalkulator Alpha Cronbach", layout="wide")
-st.title("📊 Kalkulator Alpha Cronbach")
+st.title("Kalkulator Alpha Cronbach")
 
 # Deskripsi singkat
 st.write("""
@@ -34,7 +34,7 @@ if uploaded_file is not None:
 
     alpha = cronbach_alpha(df[['Q1', 'Q2', 'Q3', 'Q4', 'Q5']])
 
-    st.subheader("📈 Hasil Analisis")
+    st.subheader("Hasil Analisis")
     col1, col2, col3 = st.columns(3)
     col1.metric("Rata-rata Content", round(df['Content'].mean(), 2))
     col2.metric("Rata-rata Accuracy", round(df['Accuracy'].mean(), 2))
