@@ -97,4 +97,4 @@ if uploaded_file is not None:
         data=excel_data,
         file_name='hasil_analisis.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+    
