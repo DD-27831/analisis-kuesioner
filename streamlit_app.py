@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 
 st.set_page_config(page_title="Analisis Kuesioner", layout="wide")
-st.title("📊 Analisis Kuesioner Mahasiswa")
+st.title("📊 Kalkulator Alpha Cronbach")
 
-uploaded_file = st.file_uploader("Unggah file Excel kuesioner", type=["xlsx"])
+uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file)
     st.write("📄 Data yang diunggah:")
