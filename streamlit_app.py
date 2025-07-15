@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import plotly.graph_objects as go
+import os
+if os.path.exists('hasil_analisis.db'):
+    os.remove('hasil_analisis.db')
 
 # =========================
 # Metadata & Judul Aplikasi
