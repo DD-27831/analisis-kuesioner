@@ -8,11 +8,11 @@ import plotly.graph_objects as go
 # Metadata & Judul Aplikasi
 # =========================
 st.set_page_config(
-    page_title="Kalkulator Alpha Cronbach (Dual DB)",
+    page_title="Kalkulator Cronbach Alpha per Dimensi (EUCS)",
     page_icon="📊",
     layout="wide"
 )
-st.title("📊 Kalkulator Alpha Cronbach (Dual Database)")
+st.title("📊 Kalkulator Cronbach Alpha per Dimensi (EUCS)")
 
 # =========================
 # Koneksi ke Database
@@ -29,17 +29,28 @@ c1.execute('''
 ''')
 conn1.commit()
 
-# DB2: Hasil Analisis
+# DB2: Hasil Analisis per Dimensi
 conn2 = sqlite3.connect('hasil_analisis.db')
 c2 = conn2.cursor()
 c2.execute('''
     CREATE TABLE IF NOT EXISTS hasil_analisis (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        dimensi TEXT,
         cronbach_alpha REAL,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )
 ''')
 conn2.commit()
+
+# =========================
+# Fungsi Hitung Cronbach Alpha
+# =========================
+def cronbach_alpha(items_scores):
+    items_scores = np.array(items_scores)
+    item_vars = items_scores.var(axis=0, ddof=1)
+    total_var = items_scores.sum(axis=1).var(ddof=1)
+    n_items = items_scores.shape[1]
+    return (n_items / (n_items - 1)) * (1 - item_vars.sum() / total_var)
 
 # =========================
 # Upload File Excel
@@ -56,50 +67,45 @@ if uploaded_file is not None:
     question_cols = [f'Q{i}' for i in range(1, 14)]
     df[question_cols].to_sql('respon_kuesioner', conn1, if_exists='append', index=False)
 
-    # Hitung Cronbach’s Alpha
-    def cronbach_alpha(items_scores):
-        items_scores = np.array(items_scores)
-        item_vars = items_scores.var(axis=0, ddof=1)
-        total_var = items_scores.sum(axis=1).var(ddof=1)
-        n_items = items_scores.shape[1]
-        return (n_items / (n_items - 1)) * (1 - item_vars.sum() / total_var)
+    # Definisi Dimensi EUCS
+    dimensi_dict = {
+        'Content': ['Q1', 'Q2', 'Q3'],
+        'Accuracy': ['Q4', 'Q5', 'Q6'],
+        'Format': ['Q7', 'Q8', 'Q9'],
+        'Ease of Use': ['Q10', 'Q11'],
+        'Timeliness': ['Q12', 'Q13']
+    }
 
-    alpha = round(cronbach_alpha(df[question_cols]), 3)
+    hasil_alpha = {}
 
-    # Simpan hasil analisis ke DB2
-    c2.execute('''
-        INSERT INTO hasil_analisis (cronbach_alpha)
-        VALUES (?)
-    ''', (alpha,))
-    conn2.commit()
+    for dimensi, pertanyaan in dimensi_dict.items():
+        alpha = round(cronbach_alpha(df[pertanyaan]), 3)
+        hasil_alpha[dimensi] = alpha
 
-    st.success("✅ Data berhasil disimpan ke Database dan Cronbach’s Alpha telah dihitung.")
+        # Simpan ke DB2
+        c2.execute('''
+            INSERT INTO hasil_analisis (dimensi, cronbach_alpha)
+            VALUES (?, ?)
+        ''', (dimensi, alpha))
+        conn2.commit()
 
+    st.success("✅ Hasil Cronbach Alpha per Dimensi telah disimpan ke Database.")
+
+    # =========================
     # Tampilkan Hasil Analisis
-    st.subheader("📈 Hasil Analisis")
-    st.metric("Cronbach’s Alpha", alpha)
+    # =========================
+    st.subheader("📈 Hasil Analisis Cronbach Alpha per Dimensi")
+    hasil_df = pd.DataFrame(list(hasil_alpha.items()), columns=['Dimensi', 'Cronbach Alpha'])
+    st.dataframe(hasil_df)
 
-    # Gauge Meter
-    st.subheader("📟 Visualisasi Cronbach’s Alpha")
-    gauge = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=alpha,
-        title={'text': "Cronbach’s Alpha"},
-        gauge={
-            'axis': {'range': [0, 1]},
-            'steps': [
-                {'range': [0, 0.6], 'color': "#FF4C4C"},
-                {'range': [0.6, 0.7], 'color': "#FFA500"},
-                {'range': [0.7, 1.0], 'color': "#4CAF50"}
-            ],
-            'threshold': {
-                'line': {'color': "black", 'width': 4},
-                'thickness': 0.75,
-                'value': alpha
-            }
-        }
-    ))
-    st.plotly_chart(gauge, use_container_width=True)
+    # Grafik Bar Chart
+    st.subheader("📊 Visualisasi Cronbach Alpha per Dimensi")
+    bar_chart = go.Figure(data=[
+        go.Bar(name='Cronbach Alpha', x=list(hasil_alpha.keys()), y=list(hasil_alpha.values()),
+               marker_color='#4CAF50')
+    ])
+    bar_chart.update_layout(title="Cronbach Alpha per Dimensi", yaxis_title="Nilai Alpha")
+    st.plotly_chart(bar_chart, use_container_width=True)
 
 # =========================
 # Riwayat Analisis
