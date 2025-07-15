@@ -13,7 +13,7 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
-st.title("📊 Kalkulator Cronbach Alpha per Dimensi (EUCS)")
+st.title(" Kalkulator Cronbach Alpha per Dimensi (EUCS)")
 
 # =========================
 # Hapus DB lama jika ingin reset (opsional)
@@ -47,13 +47,13 @@ if not os.path.exists('hasil_analisis.db'):
 # =========================
 # Upload File Excel
 # =========================
-st.subheader("📥 Upload Data Kuesioner")
+st.subheader(" Upload Data Kuesioner")
 uploaded_file = st.file_uploader("Unggah file Excel (.xlsx)", type=["xlsx"])
 
 if uploaded_file is not None:
     # Baca Excel
     df = pd.read_excel(uploaded_file)
-    st.write("📄 Data yang diunggah:")
+    st.write(" Data yang diunggah:")
     st.dataframe(df)
 
     # Koneksi ke Database
@@ -95,19 +95,19 @@ if uploaded_file is not None:
         ''', (dimensi, alpha))
         conn2.commit()
 
-    st.success("✅ Hasil Cronbach Alpha per Dimensi telah disimpan ke Database.")
+    st.success(" Hasil Cronbach Alpha per Dimensi telah disimpan ke Database.")
 
     # =========================
     # Tampilkan Hasil Analisis
     # =========================
-    st.subheader("📈 Hasil Cronbach Alpha per Dimensi")
+    st.subheader(" Hasil Cronbach Alpha per Dimensi")
     hasil_df = pd.DataFrame(list(hasil_alpha.items()), columns=['Dimensi', 'Cronbach Alpha'])
     st.dataframe(hasil_df)
 
     # =========================
     # Grafik Bar Chart Warna-warni
     # =========================
-    st.subheader("📊 Visualisasi Cronbach Alpha per Dimensi")
+    st.subheader(" Visualisasi Cronbach Alpha per Dimensi")
     colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722']  # Warna per dimensi
     bar_chart = go.Figure(data=[
         go.Bar(
@@ -130,7 +130,7 @@ if uploaded_file is not None:
 # =========================
 # Riwayat Analisis
 # =========================
-st.subheader("📜 Riwayat Hasil Analisis (Database 2)")
+st.subheader(" Riwayat Hasil Analisis (Database 2)")
 conn2 = sqlite3.connect('hasil_analisis.db')
 riwayat = pd.read_sql_query("SELECT * FROM hasil_analisis ORDER BY timestamp DESC", conn2)
 st.dataframe(riwayat)
