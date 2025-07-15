@@ -103,12 +103,22 @@ if uploaded_file is not None:
 
     # Grafik Bar Chart
     st.subheader("📊 Visualisasi Cronbach Alpha per Dimensi")
-    bar_chart = go.Figure(data=[
-        go.Bar(name='Cronbach Alpha', x=list(hasil_alpha.keys()), y=list(hasil_alpha.values()),
-               marker_color='#4CAF50')
-    ])
-    bar_chart.update_layout(title="Cronbach Alpha per Dimensi", yaxis_title="Nilai Alpha")
-    st.plotly_chart(bar_chart, use_container_width=True)
+    # Grafik Bar Chart dengan warna berbeda
+colors = ['#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#FF5722']  # Warna untuk setiap dimensi
+bar_chart = go.Figure(data=[
+    go.Bar(
+        name='Cronbach Alpha',
+        x=list(hasil_alpha.keys()),
+        y=list(hasil_alpha.values()),
+        marker_color=colors
+    )
+])
+bar_chart.update_layout(
+    title="Cronbach Alpha per Dimensi",
+    yaxis_title="Nilai Alpha"
+)
+st.plotly_chart(bar_chart, use_container_width=True)
+
 
 # =========================
 # Riwayat Analisis
